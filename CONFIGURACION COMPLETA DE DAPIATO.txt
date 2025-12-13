@@ -1,0 +1,410 @@
+
+comando para recetear router borrar todo hasta en usuario 
+
+en
+erase startup-config
+reload
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+💻 1. Dapiato-SD-R1
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos,
+caeras preso feamente#
+hostname SD-Dapiato-R1
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name Dapiato.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+end
+copy run start
+reload
+
+
+en
+conf t
+! Configuracion de Interfaces
+interface G0/0
+ ip address 198.0.2.1 255.255.255.224
+ no shutdown
+exit
+interface G0/1
+ ip address 104.97.2.1 255.255.255.252
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 104.97.2.2 - Router CLARO)
+ip route 200.0.2.0 255.255.255.224 104.97.2.2
+ip route 110.97.2.0 255.255.255.252 104.97.2.2
+ip route 83.64.5.0 255.255.255.252 104.97.2.2
+ip route 83.64.3.0 255.255.255.252 104.97.2.2
+ip route 63.42.2.0 255.255.255.224 104.97.2.2
+ip route 142.250.106.0 255.255.255.0 104.97.2.2
+end
+copy run start
+reload
+
+
+
+
+
+💻 2. CLARO
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos,
+caeras preso feamente#
+hostname CLARO
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name CLARO.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+end
+copy run start
+reload
+
+en
+conf t
+! Configuracion de Interfaces
+interface G0/1
+ ip address 104.97.2.2 255.255.255.252
+ no shutdown
+exit
+interface G0/2
+ ip address 83.64.4.2 255.255.255.252  ! IP corregida para subred 83.64.4.0/30
+ no shutdown
+exit
+! Rutas Estaticas
+ip route 198.0.2.0 255.255.255.224 104.97.2.1  ! Next-Hop: Dapiato-SD-R1
+ip route 200.0.2.0 255.255.255.224 83.64.4.1   ! Next-Hop: NAP-del-caribe
+ip route 110.97.2.0 255.255.255.252 83.64.4.1  ! Next-Hop: NAP-del-caribe
+ip route 83.64.3.0 255.255.255.252 83.64.4.1   ! Next-Hop: NAP-del-caribe
+ip route 63.42.2.0 255.255.255.224 83.64.4.1   ! Next-Hop: NAP-del-caribe
+ip route 142.250.106.0 255.255.255.0 83.64.4.1 ! Next-Hop: NAP-del-caribe
+end
+copy run start
+reload
+
+
+
+
+
+💻 3. NAP-del-caribe
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos,
+caeras preso feamente#
+hostname NAPCARIBE
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name NAPCARIBE.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+end
+copy run start
+reload
+
+
+en
+conf t
+! Configuracion de Interfaces
+interface G0/0
+ ip address 83.64.3.1 255.255.255.252 ! Corregida para subred 83.64.3.0/30 (a NAP USA)
+ no shutdown
+exit
+interface G0/1
+ ip address 83.64.4.1 255.255.255.252 ! Corregida para subred 83.64.4.0/30 (a CLARO)
+ no shutdown
+exit
+interface G0/2
+ ip address 83.64.5.1 255.255.255.252
+ no shutdown
+exit
+! Rutas Estaticas
+ip route 198.0.2.0 255.255.255.224 83.64.4.2   ! Next-Hop: CLARO
+ip route 200.0.2.0 255.255.255.224 83.64.5.2   ! Next-Hop: Altice
+ip route 110.97.2.0 255.255.255.252 83.64.5.2  ! Next-Hop: Altice
+ip route 63.42.2.0 255.255.255.224 83.64.3.2   ! Next-Hop: NAP-USA
+ip route 142.250.106.0 255.255.255.0 83.64.3.2 ! Next-Hop: NAP-USA
+end
+copy run start
+reload
+
+
+
+
+💻 4. NAP-USA
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos,
+caeras preso feamente#
+hostname NAPUSA
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name NAPUSA.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+end
+copy run start
+reload
+
+en
+conf t
+! Configuracion de Interfaces
+interface G0/0
+ ip address 63.42.2.1 255.255.255.0
+ no shutdown
+exit
+interface G0/1
+ ip address 83.64.3.2 255.255.255.252 ! Corregida para subred 83.64.3.0/30 (a NAP del Caribe)
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 83.64.3.1 - Router NAP-del-caribe)
+ip route 198.0.2.0 255.255.255.224 83.64.3.1
+ip route 104.97.2.0 255.255.255.252 83.64.3.1
+ip route 83.64.4.0 255.255.255.252 83.64.3.1
+ip route 83.64.5.0 255.255.255.252 83.64.3.1
+ip route 110.97.2.0 255.255.255.252 83.64.3.1
+ip route 200.0.2.0 255.255.255.224 83.64.3.1
+! Ruta a la LAN de Google (Next-Hop: 63.42.2.2 - Router GOOGLE)
+ip route 142.250.106.0 255.255.255.0 63.42.2.2
+end
+copy run start
+reload
+
+
+
+
+
+💻 5. GOOGLE
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos,
+caeras preso feamente#
+hostname GOOGLE
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name GOOGLE.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+end
+copy run start
+reload
+
+en
+conf t
+! Configuracion de Interfaces
+interface G0/0
+ ip address 63.42.2.2 255.255.255.0
+ no shutdown
+exit
+interface G0/1
+ ip address 142.250.106.1 255.255.255.0
+ no shutdown
+exit
+! Ruta por Defecto (Next-Hop: 63.42.2.1 - Router NAP-USA)
+ip route 0.0.0.0 0.0.0.0 63.42.2.1 
+end
+copy run start
+reload
+
+
+
+💻 6. ALTICE
+Cisco CLI
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos,
+caeras preso feamente#
+hostname ALTICE
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name ALTICE.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+end
+copy run start
+reload
+
+en
+conf t
+! Configuracion de Interfaces
+interface G0/0
+ ip address 110.97.2.2 255.255.255.252
+ no shutdown
+exit
+interface G0/2
+ ip address 83.64.5.2 255.255.255.252
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 83.64.5.1 - Router NAP-del-caribe)
+ip route 198.0.2.0 255.255.255.224 83.64.5.1
+ip route 104.97.2.0 255.255.255.252 83.64.5.1
+ip route 83.64.4.0 255.255.255.252 83.64.5.1
+ip route 83.64.3.0 255.255.255.252 83.64.5.1
+ip route 63.42.2.0 255.255.255.224 83.64.5.1
+ip route 142.250.106.0 255.255.255.0 83.64.5.1
+! Ruta a la LAN de Dapiato-azua (Next-Hop: 110.97.2.1 - Router Dapiato-azua-R1)
+ip route 200.0.2.0 255.255.255.224 110.97.2.1
+end
+copy run start
+reload
+
+
+
+💻 7. Dapiato-azua-R1
+Cisco CLI
+
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos,
+caeras preso feamente#
+hostname DAPIATO AZUA 
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name Dapiato.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+end
+copy run start
+reload
+
+en
+conf t
+! Configuracion de Interfaces
+interface G0/0
+ ip address 110.97.2.1 255.255.255.252 ! Mascara corregida a /30 para enlace punto a punto
+ no shutdown
+exit
+interface G0/2
+ ip address 200.0.2.1 255.255.255.224
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 110.97.2.2 - Router ALTICE)
+ip route 198.0.2.0 255.255.255.224 110.97.2.2
+ip route 104.97.2.0 255.255.255.252 110.97.2.2
+ip route 83.64.4.0 255.255.255.252 110.97.2.2
+ip route 83.64.3.0 255.255.255.252 110.97.2.2
+ip route 63.42.2.0 255.255.255.224 110.97.2.2
+ip route 142.250.106.0 255.255.255.0 110.97.2.2
+end
+copy run start
+reload
