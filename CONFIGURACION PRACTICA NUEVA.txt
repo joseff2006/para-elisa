@@ -57,7 +57,7 @@ interface G0/1
  ip address 104.97.2.1 255.255.255.252
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 104.97.2.2 - Router CLARO)
+
 ip route 200.0.2.0 255.255.255.224 104.97.2.2
 ip route 110.97.2.0 255.255.255.252 104.97.2.2
 ip route 83.64.5.0 255.255.255.252 104.97.2.2
@@ -112,14 +112,15 @@ interface G0/2
  ip address 83.64.4.2 255.255.255.252
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 104.97.2.1 o 83.64.4.1)
-ip route 198.0.2.0 255.255.255.224 104.97.2.1  ! Hacia Dapiato-SD-R1
-ip route 200.0.2.0 255.255.255.224 83.64.4.1   ! Hacia NAP-del-caribe
-ip route 110.97.2.0 255.255.255.252 83.64.4.1  ! Hacia NAP-del-caribe
-ip route 83.64.3.0 255.255.255.252 83.64.4.1   ! Hacia NAP-del-caribe
-ip route 63.42.2.0 255.255.255.252 83.64.4.1   ! Hacia NAP-del-caribe
-ip route 142.250.106.0 255.255.255.0 83.64.4.1 ! Hacia NAP-del-caribe
-ip route 83.64.5.0 255.255.255.252 83.64.4.1   ! Hacia NAP-del-caribe
+
+
+ip route 198.0.2.0 255.255.255.224 104.97.2.1  
+ip route 200.0.2.0 255.255.255.224 83.64.4.1   
+ip route 110.97.2.0 255.255.255.252 83.64.4.1  
+ip route 83.64.3.0 255.255.255.252 83.64.4.1   
+ip route 63.42.2.0 255.255.255.252 83.64.4.1   
+ip route 142.250.106.0 255.255.255.0 83.64.4.1 
+ip route 83.64.5.0 255.255.255.252 83.64.4.1   
 ! NUEVAS RUTAS
 ip route 83.64.6.0 255.255.255.252 83.64.4.1
 ip route 150.10.1.0 255.255.255.0 83.64.4.1
@@ -170,17 +171,17 @@ interface G0/2
  ip address 83.64.5.1 255.255.255.252
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 83.64.4.2 o 83.64.5.2 o 83.64.3.2)
-ip route 198.0.2.0 255.255.255.224 83.64.4.2   ! Hacia CLARO
-ip route 200.0.2.0 255.255.255.224 83.64.5.2   ! Hacia Altice
-ip route 110.97.2.0 255.255.255.252 83.64.5.2  ! Hacia Altice
-ip route 63.42.2.0 255.255.255.252 83.64.3.2   ! Hacia NAP-USA
-ip route 142.250.106.0 255.255.255.0 83.64.3.2 ! Hacia NAP-USA
+
+ip route 198.0.2.0 255.255.255.224 83.64.4.2   
+ip route 200.0.2.0 255.255.255.224 83.64.5.2   
+ip route 110.97.2.0 255.255.255.252 83.64.5.2  
+ip route 63.42.2.0 255.255.255.252 83.64.3.2   
+ip route 142.250.106.0 255.255.255.0 83.64.3.2 
 ! NUEVAS RUTAS
-ip route 83.64.6.0 255.255.255.252 83.64.3.2    ! Hacia NAP-USA
-ip route 150.10.1.0 255.255.255.0 83.64.3.2     ! Hacia NAP-USA
-ip route 150.10.2.0 255.255.255.0 83.64.3.2     ! Hacia NAP-USA
-ip route 63.42.3.0 255.255.255.252 83.64.3.2    ! Hacia NAP-USA
+ip route 83.64.6.0 255.255.255.252 83.64.3.2    
+ip route 150.10.1.0 255.255.255.0 83.64.3.2     
+ip route 150.10.2.0 255.255.255.0 83.64.3.2     
+ip route 63.42.3.0 255.255.255.252 83.64.3.2    
 end
 copy run start
 reload
@@ -229,19 +230,19 @@ interface G0/2
  ip address 83.64.6.1 255.255.255.252 ! NUEVA IP /30 para enlace a ATLANTA
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 83.64.3.1 o 63.42.2.2 o 83.64.6.2)
-ip route 198.0.2.0 255.255.255.224 83.64.3.1     ! Hacia NAP-del-caribe
-ip route 104.97.2.0 255.255.255.252 83.64.3.1    ! Hacia NAP-del-caribe
-ip route 83.64.4.0 255.255.255.252 83.64.3.1     ! Hacia NAP-del-caribe
-ip route 83.64.5.0 255.255.255.252 83.64.3.1     ! Hacia NAP-del-caribe
-ip route 110.97.2.0 255.255.255.252 83.64.3.1    ! Hacia NAP-del-caribe
-ip route 200.0.2.0 255.255.255.224 83.64.3.1     ! Hacia NAP-del-caribe
+
+ip route 198.0.2.0 255.255.255.224 83.64.3.1     
+ip route 104.97.2.0 255.255.255.252 83.64.3.1    
+ip route 83.64.4.0 255.255.255.252 83.64.3.1     
+ip route 83.64.5.0 255.255.255.252 83.64.3.1     
+ip route 110.97.2.0 255.255.255.252 83.64.3.1    
+ip route 200.0.2.0 255.255.255.224 83.64.3.1     
 ! Rutas hacia ATLANTA/META
-ip route 150.10.1.0 255.255.255.0 83.64.6.2      ! Next-Hop: ATLANTA
-ip route 150.10.2.0 255.255.255.0 83.64.6.2      ! Next-Hop: ATLANTA
+ip route 150.10.1.0 255.255.255.0 83.64.6.2      
+ip route 150.10.2.0 255.255.255.0 83.64.6.2      
 ! Rutas hacia SANFRANCISCO/GOOGLE
-ip route 63.42.3.0 255.255.255.252 63.42.2.2      ! Next-Hop: SANFRANCISCO
-ip route 142.250.106.0 255.255.255.0 63.42.2.2    ! Next-Hop: SANFRANCISCO
+ip route 63.42.3.0 255.255.255.252 63.42.2.2      
+ip route 142.250.106.0 255.255.255.0 63.42.2.2    
 end
 copy run start
 reload
@@ -287,16 +288,16 @@ interface G0/1
  ip address 142.250.106.1 255.255.255.0
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 63.42.3.1 - Router SANFRANCISCO)
+
 no ip route 0.0.0.0 0.0.0.0 63.42.2.1 ! ELIMINAR RUTA POR DEFECTO ANTIGUA
 ip route 198.0.2.0 255.255.255.224 63.42.3.1
 ip route 200.0.2.0 255.255.255.224 63.42.3.1
 ip route 104.97.2.0 255.255.255.252 63.42.3.1
 ip route 83.64.4.0 255.255.255.252 63.42.3.1
 ip route 83.64.5.0 255.255.255.252 63.42.3.1
-ip route 83.64.6.0 255.255.255.252 63.42.3.1 ! Nueva red ATLANTA-NAPUSA
-ip route 150.10.1.0 255.255.255.0 63.42.3.1 ! Nueva red ATLANTA-META
-ip route 150.10.2.0 255.255.255.0 63.42.3.1 ! Nueva red LAN META
+ip route 83.64.6.0 255.255.255.252 63.42.3.1 
+ip route 150.10.1.0 255.255.255.0 63.42.3.1 
+ip route 150.10.2.0 255.255.255.0 63.42.3.1 
 ip route 110.97.2.0 255.255.255.252 63.42.3.1
 ip route 83.64.3.0 255.255.255.252 63.42.3.1
 ip route 63.42.2.0 255.255.255.252 63.42.3.1
@@ -343,14 +344,14 @@ interface G0/2
  ip address 83.64.5.2 255.255.255.252
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 83.64.5.1 o 110.97.2.1)
+
 ip route 198.0.2.0 255.255.255.224 83.64.5.1
 ip route 104.97.2.0 255.255.255.252 83.64.5.1
 ip route 83.64.4.0 255.255.255.252 83.64.5.1
 ip route 83.64.3.0 255.255.255.252 83.64.5.1
 ip route 63.42.2.0 255.255.255.252 83.64.5.1
 ip route 142.250.106.0 255.255.255.0 83.64.5.1
-ip route 200.0.2.0 255.255.255.224 110.97.2.1 ! Hacia Dapiato-azua
+ip route 200.0.2.0 255.255.255.224 110.97.2.1 
 ! NUEVAS RUTAS
 ip route 83.64.6.0 255.255.255.252 83.64.5.1
 ip route 150.10.1.0 255.255.255.0 83.64.5.1
@@ -373,7 +374,7 @@ en
 conf t
 no ip domain-lookup
 banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
-hostname DAPIATO AZUA
+hostname DAPIATOAZUA
 enable secret jiff!
 username jiff privilege 15 secret jiff!
 ip domain-name Dapiato.com
@@ -400,7 +401,7 @@ interface G0/2
  ip address 200.0.2.1 255.255.255.224
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 110.97.2.2 - Router ALTICE)
+
 ip route 198.0.2.0 255.255.255.224 110.97.2.2
 ip route 104.97.2.0 255.255.255.252 110.97.2.2
 ip route 83.64.4.0 255.255.255.252 110.97.2.2
@@ -451,18 +452,18 @@ interface G0/1
  ip address 150.10.1.1 255.255.255.0 ! Enlace a META (/24)
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 83.64.6.1 o 150.10.1.2)
-ip route 198.0.2.0 255.255.255.224 83.64.6.1   ! Hacia NAP-USA
-ip route 200.0.2.0 255.255.255.224 83.64.6.1   ! Hacia NAP-USA
-ip route 104.97.2.0 255.255.255.252 83.64.6.1  ! Hacia NAP-USA
-ip route 83.64.4.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
-ip route 83.64.5.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
-ip route 63.42.2.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
-ip route 63.42.3.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
-ip route 110.97.2.0 255.255.255.252 83.64.6.1  ! Hacia NAP-USA
-ip route 83.64.3.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
-ip route 142.250.106.0 255.255.255.0 150.10.1.2 ! Hacia META
-ip route 150.10.2.0 255.255.255.0 150.10.1.2    ! Hacia META
+
+ip route 198.0.2.0 255.255.255.224 83.64.6.1  
+ip route 200.0.2.0 255.255.255.224 83.64.6.1   
+ip route 104.97.2.0 255.255.255.252 83.64.6.1  
+ip route 83.64.4.0 255.255.255.252 83.64.6.1   
+ip route 83.64.5.0 255.255.255.252 83.64.6.1   
+ip route 63.42.2.0 255.255.255.252 83.64.6.1   
+ip route 63.42.3.0 255.255.255.252 83.64.6.1   
+ip route 110.97.2.0 255.255.255.252 83.64.6.1  
+ip route 83.64.3.0 255.255.255.252 83.64.6.1   
+ip route 142.250.106.0 255.255.255.0 150.10.1.2 
+ip route 150.10.2.0 255.255.255.0 150.10.1.2    
 end
 copy run start
 reload
@@ -475,7 +476,7 @@ reload
 
 
 
-💻 9. METACisco CLI
+💻 9. META Cisco CLI
 
 en
 conf t
@@ -499,17 +500,17 @@ login local
 logging synchronous
 transport input ssh
 exit
-! Configuracion de Interfaces
+
 interface G0/0
- ip address 150.10.1.2 255.255.255.0 ! Enlace a ATLANTA (/24)
+ ip address 150.10.1.2 255.255.255.0 
  no shutdown
 exit
 interface G0/1
- ip address 150.10.2.1 255.255.255.0 ! LAN PCS (/24)
+ ip address 150.10.2.1 255.255.255.0 
  no shutdown
 exit
-! Rutas Estaticas (Next-Hop: 150.10.1.1 - Router ATLANTA)
-ip route 0.0.0.0 0.0.0.0 150.10.1.1 ! Ruta por defecto hacia ATLANTA
+
+ip route 0.0.0.0 0.0.0.0 150.10.1.1 
 end
 copy run start
 reload
@@ -544,25 +545,25 @@ transport input ssh
 exit
 ! Configuracion de Interfaces
 interface G0/0
- ip address 63.42.2.2 255.255.255.252 ! Enlace a NAP-USA (/30)
+ ip address 63.42.2.2 255.255.255.252 
  no shutdown
 exit
 interface G0/1
- ip address 63.42.3.1 255.255.255.252 ! Enlace a GOOGLE (/30)
+ ip address 63.42.3.1 255.255.255.252 
  no shutdown
 exit
 ! Rutas Estaticas (Next-Hop: 63.42.2.1 o 63.42.3.2)
-ip route 198.0.2.0 255.255.255.224 63.42.2.1   ! Hacia NAP-USA
-ip route 200.0.2.0 255.255.255.224 63.42.2.1   ! Hacia NAP-USA
-ip route 104.97.2.0 255.255.255.252 63.42.2.1  ! Hacia NAP-USA
-ip route 83.64.4.0 255.255.255.252 63.42.2.1   ! Hacia NAP-USA
-ip route 83.64.5.0 255.255.255.252 63.42.2.1   ! Hacia NAP-USA
-ip route 83.64.6.0 255.255.255.252 63.42.2.1   ! Hacia NAP-USA
-ip route 150.10.1.0 255.255.255.0 63.42.2.1    ! Hacia NAP-USA
-ip route 150.10.2.0 255.255.255.0 63.42.2.1    ! Hacia NAP-USA
-ip route 110.97.2.0 255.255.255.252 63.42.2.1  ! Hacia NAP-USA
-ip route 83.64.3.0 255.255.255.252 63.42.2.1   ! Hacia NAP-USA
-ip route 142.250.106.0 255.255.255.0 63.42.3.2 ! Hacia GOOGLE
+ip route 198.0.2.0 255.255.255.224 63.42.2.1  
+ip route 200.0.2.0 255.255.255.224 63.42.2.1   
+ip route 104.97.2.0 255.255.255.252 63.42.2.1  
+ip route 83.64.4.0 255.255.255.252 63.42.2.1   
+ip route 83.64.5.0 255.255.255.252 63.42.2.1   
+ip route 83.64.6.0 255.255.255.252 63.42.2.1   
+ip route 150.10.1.0 255.255.255.0 63.42.2.1    
+ip route 150.10.2.0 255.255.255.0 63.42.2.1    
+ip route 110.97.2.0 255.255.255.252 63.42.2.1  
+ip route 83.64.3.0 255.255.255.252 63.42.2.1   
+ip route 142.250.106.0 255.255.255.0 63.42.3.2 
 end
 copy run start
 reload
