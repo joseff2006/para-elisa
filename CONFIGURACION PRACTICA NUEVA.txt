@@ -1,0 +1,645 @@
+
+comando para recetear router borrar todo hasta en usuario 
+
+en
+erase startup-config
+delete flash:vlan.dat
+reload
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+💻 1. Dapiato-SD-R1
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname SD-Dapiato-R1
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name Dapiato.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces
+interface G0/0
+ ip address 198.0.2.1 255.255.255.224
+ no shutdown
+exit
+interface G0/1
+ ip address 104.97.2.1 255.255.255.252
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 104.97.2.2 - Router CLARO)
+ip route 200.0.2.0 255.255.255.224 104.97.2.2
+ip route 110.97.2.0 255.255.255.252 104.97.2.2
+ip route 83.64.5.0 255.255.255.252 104.97.2.2
+ip route 83.64.3.0 255.255.255.252 104.97.2.2
+ip route 63.42.2.0 255.255.255.252 104.97.2.2
+ip route 142.250.106.0 255.255.255.0 104.97.2.2
+! NUEVAS RUTAS
+ip route 83.64.6.0 255.255.255.252 104.97.2.2
+ip route 150.10.1.0 255.255.255.0 104.97.2.2
+ip route 150.10.2.0 255.255.255.0 104.97.2.2
+ip route 63.42.3.0 255.255.255.252 104.97.2.2
+end
+copy run start
+reloadd
+
+
+
+
+
+💻 2. CLARO
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname CLARO
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name CLARO.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces
+interface G0/1
+ ip address 104.97.2.2 255.255.255.252
+ no shutdown
+exit
+interface G0/2
+ ip address 83.64.4.2 255.255.255.252
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 104.97.2.1 o 83.64.4.1)
+ip route 198.0.2.0 255.255.255.224 104.97.2.1  ! Hacia Dapiato-SD-R1
+ip route 200.0.2.0 255.255.255.224 83.64.4.1   ! Hacia NAP-del-caribe
+ip route 110.97.2.0 255.255.255.252 83.64.4.1  ! Hacia NAP-del-caribe
+ip route 83.64.3.0 255.255.255.252 83.64.4.1   ! Hacia NAP-del-caribe
+ip route 63.42.2.0 255.255.255.252 83.64.4.1   ! Hacia NAP-del-caribe
+ip route 142.250.106.0 255.255.255.0 83.64.4.1 ! Hacia NAP-del-caribe
+ip route 83.64.5.0 255.255.255.252 83.64.4.1   ! Hacia NAP-del-caribe
+! NUEVAS RUTAS
+ip route 83.64.6.0 255.255.255.252 83.64.4.1
+ip route 150.10.1.0 255.255.255.0 83.64.4.1
+ip route 150.10.2.0 255.255.255.0 83.64.4.1
+ip route 63.42.3.0 255.255.255.252 83.64.4.1
+end
+copy run start
+reload
+
+
+
+💻 3. NAP-del-caribe
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname NAPCARIBE
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name NAPCARIBE.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces
+interface G0/0
+ ip address 83.64.3.1 255.255.255.252 
+ no shutdown
+exit
+interface G0/1
+ ip address 83.64.4.1 255.255.255.252 
+ no shutdown
+exit
+interface G0/2
+ ip address 83.64.5.1 255.255.255.252
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 83.64.4.2 o 83.64.5.2 o 83.64.3.2)
+ip route 198.0.2.0 255.255.255.224 83.64.4.2   ! Hacia CLARO
+ip route 200.0.2.0 255.255.255.224 83.64.5.2   ! Hacia Altice
+ip route 110.97.2.0 255.255.255.252 83.64.5.2  ! Hacia Altice
+ip route 63.42.2.0 255.255.255.252 83.64.3.2   ! Hacia NAP-USA
+ip route 142.250.106.0 255.255.255.0 83.64.3.2 ! Hacia NAP-USA
+! NUEVAS RUTAS
+ip route 83.64.6.0 255.255.255.252 83.64.3.2    ! Hacia NAP-USA
+ip route 150.10.1.0 255.255.255.0 83.64.3.2     ! Hacia NAP-USA
+ip route 150.10.2.0 255.255.255.0 83.64.3.2     ! Hacia NAP-USA
+ip route 63.42.3.0 255.255.255.252 83.64.3.2    ! Hacia NAP-USA
+end
+copy run start
+reload
+
+
+
+
+
+
+💻 4. NAP-USA
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname NAPUSA
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name NAPUSA.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces (MODIFICADA)
+interface G0/0
+ ip address 63.42.2.1 255.255.255.252 ! NUEVA IP /30 para enlace a SANFRANCISCO
+ no shutdown
+exit
+interface G0/1
+ ip address 83.64.3.2 255.255.255.252
+ no shutdown
+exit
+interface G0/2
+ ip address 83.64.6.1 255.255.255.252 ! NUEVA IP /30 para enlace a ATLANTA
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 83.64.3.1 o 63.42.2.2 o 83.64.6.2)
+ip route 198.0.2.0 255.255.255.224 83.64.3.1     ! Hacia NAP-del-caribe
+ip route 104.97.2.0 255.255.255.252 83.64.3.1    ! Hacia NAP-del-caribe
+ip route 83.64.4.0 255.255.255.252 83.64.3.1     ! Hacia NAP-del-caribe
+ip route 83.64.5.0 255.255.255.252 83.64.3.1     ! Hacia NAP-del-caribe
+ip route 110.97.2.0 255.255.255.252 83.64.3.1    ! Hacia NAP-del-caribe
+ip route 200.0.2.0 255.255.255.224 83.64.3.1     ! Hacia NAP-del-caribe
+! Rutas hacia ATLANTA/META
+ip route 150.10.1.0 255.255.255.0 83.64.6.2      ! Next-Hop: ATLANTA
+ip route 150.10.2.0 255.255.255.0 83.64.6.2      ! Next-Hop: ATLANTA
+! Rutas hacia SANFRANCISCO/GOOGLE
+ip route 63.42.3.0 255.255.255.252 63.42.2.2      ! Next-Hop: SANFRANCISCO
+ip route 142.250.106.0 255.255.255.0 63.42.2.2    ! Next-Hop: SANFRANCISCO
+end
+copy run start
+reload
+
+
+
+
+
+
+
+💻 5. GOOGLE
+Cisco CLI
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname GOOGLE
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name GOOGLE.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces (MODIFICADA)
+interface G0/0
+ ip address 63.42.3.2 255.255.255.252 ! NUEVA IP /30 para enlace a SANFRANCISCO
+ no shutdown
+exit
+interface G0/1
+ ip address 142.250.106.1 255.255.255.0
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 63.42.3.1 - Router SANFRANCISCO)
+no ip route 0.0.0.0 0.0.0.0 63.42.2.1 ! ELIMINAR RUTA POR DEFECTO ANTIGUA
+ip route 198.0.2.0 255.255.255.224 63.42.3.1
+ip route 200.0.2.0 255.255.255.224 63.42.3.1
+ip route 104.97.2.0 255.255.255.252 63.42.3.1
+ip route 83.64.4.0 255.255.255.252 63.42.3.1
+ip route 83.64.5.0 255.255.255.252 63.42.3.1
+ip route 83.64.6.0 255.255.255.252 63.42.3.1 ! Nueva red ATLANTA-NAPUSA
+ip route 150.10.1.0 255.255.255.0 63.42.3.1 ! Nueva red ATLANTA-META
+ip route 150.10.2.0 255.255.255.0 63.42.3.1 ! Nueva red LAN META
+ip route 110.97.2.0 255.255.255.252 63.42.3.1
+ip route 83.64.3.0 255.255.255.252 63.42.3.1
+ip route 63.42.2.0 255.255.255.252 63.42.3.1
+end
+copy run start
+reload
+
+
+
+
+
+
+💻 6. ALTICE
+Cisco CLI
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname ALTICE
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name ALTICE.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces
+interface G0/0
+ ip address 110.97.2.2 255.255.255.252
+ no shutdown
+exit
+interface G0/2
+ ip address 83.64.5.2 255.255.255.252
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 83.64.5.1 o 110.97.2.1)
+ip route 198.0.2.0 255.255.255.224 83.64.5.1
+ip route 104.97.2.0 255.255.255.252 83.64.5.1
+ip route 83.64.4.0 255.255.255.252 83.64.5.1
+ip route 83.64.3.0 255.255.255.252 83.64.5.1
+ip route 63.42.2.0 255.255.255.252 83.64.5.1
+ip route 142.250.106.0 255.255.255.0 83.64.5.1
+ip route 200.0.2.0 255.255.255.224 110.97.2.1 ! Hacia Dapiato-azua
+! NUEVAS RUTAS
+ip route 83.64.6.0 255.255.255.252 83.64.5.1
+ip route 150.10.1.0 255.255.255.0 83.64.5.1
+ip route 150.10.2.0 255.255.255.0 83.64.5.1
+ip route 63.42.3.0 255.255.255.252 83.64.5.1
+end
+copy run start
+reload
+
+
+
+
+
+💻 7. Dapiato-azua-R1
+Cisco CLI
+
+
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname DAPIATO AZUA
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name Dapiato.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces
+interface G0/0
+ ip address 110.97.2.1 255.255.255.252
+ no shutdown
+exit
+interface G0/2
+ ip address 200.0.2.1 255.255.255.224
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 110.97.2.2 - Router ALTICE)
+ip route 198.0.2.0 255.255.255.224 110.97.2.2
+ip route 104.97.2.0 255.255.255.252 110.97.2.2
+ip route 83.64.4.0 255.255.255.252 110.97.2.2
+ip route 83.64.3.0 255.255.255.252 110.97.2.2
+ip route 63.42.2.0 255.255.255.252 110.97.2.2
+ip route 142.250.106.0 255.255.255.0 110.97.2.2
+! NUEVAS RUTAS
+ip route 83.64.6.0 255.255.255.252 110.97.2.2
+ip route 150.10.1.0 255.255.255.0 110.97.2.2
+ip route 150.10.2.0 255.255.255.0 110.97.2.2
+ip route 63.42.3.0 255.255.255.252 110.97.2.2
+end
+copy run start
+reload
+
+
+
+💻 8. ATLANTA (Nuevo)
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname ATLANTA
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name ATLANTA.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces
+interface G0/0
+ ip address 83.64.6.2 255.255.255.252 ! Enlace a NAP-USA (/30)
+ no shutdown
+exit
+interface G0/1
+ ip address 150.10.1.1 255.255.255.0 ! Enlace a META (/24)
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 83.64.6.1 o 150.10.1.2)
+ip route 198.0.2.0 255.255.255.224 83.64.6.1   ! Hacia NAP-USA
+ip route 200.0.2.0 255.255.255.224 83.64.6.1   ! Hacia NAP-USA
+ip route 104.97.2.0 255.255.255.252 83.64.6.1  ! Hacia NAP-USA
+ip route 83.64.4.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
+ip route 83.64.5.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
+ip route 63.42.2.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
+ip route 63.42.3.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
+ip route 110.97.2.0 255.255.255.252 83.64.6.1  ! Hacia NAP-USA
+ip route 83.64.3.0 255.255.255.252 83.64.6.1   ! Hacia NAP-USA
+ip route 142.250.106.0 255.255.255.0 150.10.1.2 ! Hacia META
+ip route 150.10.2.0 255.255.255.0 150.10.1.2    ! Hacia META
+end
+copy run start
+reload
+
+
+
+
+
+
+
+
+
+💻 9. METACisco CLI
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname META
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name META.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces
+interface G0/0
+ ip address 150.10.1.2 255.255.255.0 ! Enlace a ATLANTA (/24)
+ no shutdown
+exit
+interface G0/1
+ ip address 150.10.2.1 255.255.255.0 ! LAN PCS (/24)
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 150.10.1.1 - Router ATLANTA)
+ip route 0.0.0.0 0.0.0.0 150.10.1.1 ! Ruta por defecto hacia ATLANTA
+end
+copy run start
+reload
+
+
+
+
+
+💻 10. SANFRANCISCOCisco CLI
+
+en
+conf t
+no ip domain-lookup
+banner motd #Si entras a este equipo sin permisos, caeras preso feamente#
+hostname SANFRANCISCO
+enable secret jiff!
+username jiff privilege 15 secret jiff!
+ip domain-name SANFRANCISCO.com
+crypto key generate rsa
+1024
+ip ssh time-out 60
+ip ssh version 2
+ip ssh authentication-retries 3
+line con 0
+pass jiff!
+logging synchronous
+login local
+line vty 0 15
+login local
+logging synchronous
+transport input ssh
+exit
+! Configuracion de Interfaces
+interface G0/0
+ ip address 63.42.2.2 255.255.255.252 ! Enlace a NAP-USA (/30)
+ no shutdown
+exit
+interface G0/1
+ ip address 63.42.3.1 255.255.255.252 ! Enlace a GOOGLE (/30)
+ no shutdown
+exit
+! Rutas Estaticas (Next-Hop: 63.42.2.1 o 63.42.3.2)
+ip route 198.0.2.0 255.255.255.224 63.42.2.1   ! Hacia NAP-USA
+ip route 200.0.2.0 255.255.255.224 63.42.2.1   ! Hacia NAP-USA
+ip route 104.97.2.0 255.255.255.252 63.42.2.1  ! Hacia NAP-USA
+ip route 83.64.4.0 255.255.255.252 63.42.2.1   ! Hacia NAP-USA
+ip route 83.64.5.0 255.255.255.252 63.42.2.1   ! Hacia NAP-USA
+ip route 83.64.6.0 255.255.255.252 63.42.2.1   ! Hacia NAP-USA
+ip route 150.10.1.0 255.255.255.0 63.42.2.1    ! Hacia NAP-USA
+ip route 150.10.2.0 255.255.255.0 63.42.2.1    ! Hacia NAP-USA
+ip route 110.97.2.0 255.255.255.252 63.42.2.1  ! Hacia NAP-USA
+ip route 83.64.3.0 255.255.255.252 63.42.2.1   ! Hacia NAP-USA
+ip route 142.250.106.0 255.255.255.0 63.42.3.2 ! Hacia GOOGLE
+end
+copy run start
+reload
+
+
+
+
+
+
+
+
+
+
+
+OS DE INTERFACES Y CONECCIONES DE LOS ROUTERS 
+
+DAPIATO SD
+G0/0 UP 198.0.2.1 /27   se conecta a un swich y computadoras   
+
+G0/1 UP 104.97.2.1 /30     SE CONCETA AL ROUTER CLARO POR LA G/01  Y LLEGA AL ROUTER DE CLARO G0/1
+
+G0/2 DOWN
+
+
+
+CLARO
+G0/0 DOW 
+G0/1 UP 104.97.2.2 /30 = SE CONCETA AL ROUTER DAPIATO SD POR LA G/01  Y LLEGA AL ROUTER   DAPIATO SD  A LA G0/1
+
+G0/2 UP 83.63.3.2./30 = SE CONCETA AL ROUTER NAP DEL CARIBE POR LA G/02  Y LLEGA AL ROUTER  NAP DEL CARIBE A LA G0/1
+
+NAP DEL CARIBE 
+G0/0 83.64.3.1 /30 =  SE CONCETA AL ROUTER NAP DE USA  POR LA G0/0  Y LLEGA AL ROUTER  NAP DE USA  A LA G0/1
+
+G0/1 83.64.4.1 /30 = SE CONCETA AL ROUTER CLARO POR LA G/01  Y LLEGA AL ROUTER  CLARO A LA G0/2
+
+G0/2 83.64.5.1 /30 = SE CONCETA AL ROUTER ALTICE POR LA G/02  Y LLEGA AL ROUTER  ALTICE A LA G0/2
+
+NAP DE USA 
+G0/0 UP 63.42.2.1 /24 = SE CONCETA AL ROUTER SAN FRANCIASCO  POR LA G/02  Y LLEGA AL ROUTER SANFRANCIASCO A LA G0/0
+G0/1 UP 83.64.4.2 /30  = SE CONCETA AL ROUTERNAP DEL CARIBE  POR LA G/01  Y LLEGA AL ROUTER  NAP DEL CARIBE A LA G0/1
+G0/2 UP   --AGREGAMELE UNA IP QUE VAYA DEACORDE ----- = SE CONCETA AL ROUTER ATLANTA POR LA G/02  Y LLEGA AL ROUTER ATLANTA A LA G0/0
+
+GOOGLE
+G0/0 UP 63.42.2.2 /24 = SE CONCETA AL SANFRANCISCO POR LA G0/0  Y LLEGA AL ROUTER  SANFRANCISCO A LA G0/1
+
+G0/1 UP 142.250.106.1 /24
+G0/2 DOWN 
+
+
+ALTICE
+G0/0 UP 110.97.2.2 /30 = SE CONCETA AL ROUTER DAPIATO AZUA POR LA G0/0  Y LLEGA AL ROUTER  DAPIATO AZUA A LA G0/0
+G0/1 DOWN
+G0/2 UP 83.64.5.2 /30 = SE CONCETA AL ROUTER NAP DEL CARIBE POR  LA G/02  Y LLEGA AL ROUTER NAP DEL CARIBE  A LA G0/2
+
+DAPIATO AZUA
+G0/0 UP 110.97.2.1 /24 = SE CONCETA AL ROUTER altice POR LA G0/0  Y LLEGA AL ROUTER  altice A LA G0/0
+G0/1 DOWN 
+G0/2 UP 200.0.2.1/27 se conecta a un swch y computadoras 
+
+ATLANTA 
+
+G0/0 UP----- AGRAGAMELE LA IP /30 ------= SE CONCETA AL NAP DE USA  POR LA G0/0  Y LLEGA AL ROUTER  NAP DE USA A LA G0/2
+G0/1 UP  AGRAGAMELE LA IP /24 = se conecta a META POR EL G0/1 Y LEGA AL ROUTER META A LA G0/0
+
+G0/2 DOWN
+
+
+SANFRANCIASCO 
+
+G0/0 UP----- AGRAGAMELE LA IP /30 ------= SE CONCETA AL NAP DE USA  POR LA G0/0  Y LLEGA AL ROUTER  NAP DE USA A LA G0/0
+G0/1 UP  AGRAGAMELE LA IP /30 = se conecta a GOOGLE  POR EL G0/1 Y LEGA AL ROUTER GOOGLE  A LA G0/0
+G0/2 DOWN
+
+META 
+
+G0/0 UP----- AGRAGAMELE LA IP /24 ------= SE CONCETA AL ATLANTA POR LA G0/0  Y LLEGA AL ROUTER  ATLANTA A LA G0/1
+G0/1 UP  AGRAGAMELE LA IP /24 = se conecta a PCS
+
+G0/2 DOWN
